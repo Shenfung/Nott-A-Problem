@@ -1,4 +1,4 @@
-package com.example.nott_a_problem.pages.authentication
+package com.example.nott_a_problem.pages.authentication.screens
 
 import android.util.Log
 import android.widget.Toast
@@ -44,6 +44,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.nott_a_problem.AuthenticationManager
+import com.example.nott_a_problem.pages.authentication.AuthResponse
+import com.example.nott_a_problem.pages.authentication.LoginBackground
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -184,8 +186,44 @@ fun LoginScreen(navController: NavHostController) {
                 )
             )
 
+                val forgotPasswordAnnotatedString = buildAnnotatedString {
+                    pushStringAnnotation(
+                        tag = "FORGOT_PASSWORD",
+                        annotation = "reset_password_page"
+                    ) // Tag to recognize the hyperlink
+                    withStyle(
+                        style = SpanStyle(
+                            color = MaterialTheme.colorScheme.primary,
+                            textDecoration = TextDecoration.Underline
+                        )
+                    ) {
+                        append("Forgot Password?")
+                    }
+                    pop() // End annotation
+                }
 
-            Spacer(modifier = Modifier.height(20.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp),
+                    contentAlignment = Alignment.BottomEnd
+                ) {
+                    ClickableText(
+                        text = forgotPasswordAnnotatedString,
+                        style = MaterialTheme.typography.bodyMedium,
+                        onClick = { offset ->
+                            forgotPasswordAnnotatedString.getStringAnnotations(
+                                tag = "FORGOT_PASSWORD",
+                                start = offset,
+                                end = offset
+                            )
+                                .firstOrNull()?.let {
+                                    Log.e("LoginScreen", "Navigating to reset password page")
+                                    navController.navigate("change_password") // Navigate to the reset password screen
+                                }
+                        }
+                    )
+                }
 
             Button(
                 onClick = {

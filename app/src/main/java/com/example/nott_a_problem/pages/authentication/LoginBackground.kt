@@ -102,7 +102,6 @@ fun LoginBackground() {
             contentDescription = "Logo",
             modifier = Modifier
                 .align(Alignment.TopStart)
-//                .padding(16.dp) // Add padding to position the logo well
                 .size(150.dp)
         )
     }

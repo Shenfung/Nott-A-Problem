@@ -1,7 +1,6 @@
-package com.example.nott_a_problem.pages.authentication
+package com.example.nott_a_problem.pages.authentication.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.nott_a_problem.R
+import com.example.nott_a_problem.pages.authentication.LoginBackground
 
 @Composable
 fun GetStartedScreen(navController: NavController) {

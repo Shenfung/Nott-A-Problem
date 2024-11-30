@@ -1,4 +1,4 @@
-package com.example.nott_a_problem.pages.authentication
+package com.example.nott_a_problem.pages.authentication.screens
 
 import android.util.Log
 import android.widget.Toast
@@ -41,6 +41,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.nott_a_problem.pages.authentication.LoginBackground
 import com.google.firebase.auth.FirebaseAuth
 
 
