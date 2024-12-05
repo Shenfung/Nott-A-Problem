@@ -1,4 +1,4 @@
-package com.example.nott_a_problem.pages.dashboard
+package com.example.nott_a_problem.pages.dashboard.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -15,14 +15,21 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.nott_a_problem.R
 
 @Composable
 fun DashboardBackground() {
     val screenWidth = LocalDensity.current.run { androidx.compose.ui.platform.LocalContext.current.resources.displayMetrics.widthPixels.toDp() }
+
+    val customFontFamily = FontFamily(
+        Font(R.font.lobster_regular, FontWeight.Normal) // Replace with your font file's name
+    )
 
     Box(
         modifier = Modifier
@@ -74,17 +81,18 @@ fun DashboardBackground() {
                 radius = size.width * 0.5f
             )
         }
-        Text(
-            "Nott-A-Problem",
-            fontWeight = FontWeight.Bold,
-            fontSize = (screenWidth.value / 8).sp,
-            maxLines = 1, // Prevents the text from wrapping to multiple lines
-            overflow = TextOverflow.Ellipsis, // Adds ellipsis when text overflows
-            modifier = Modifier
-                .align(Alignment.TopCenter) // Aligns the text to the top center
-                .padding(top = 16.dp) // Add padding from the top
-                .fillMaxWidth() // Make the text take up the full width
-                .wrapContentWidth(Alignment.CenterHorizontally) // Ensures the text is centered horizontally
-        )
+//        Text(
+//            "Nott-A-Problem",
+//            fontFamily = customFontFamily,
+//            fontWeight = FontWeight.Bold,
+//            fontSize = (screenWidth.value / 8).sp,
+//            maxLines = 1, // Prevents the text from wrapping to multiple lines
+//            overflow = TextOverflow.Ellipsis, // Adds ellipsis when text overflows
+//            modifier = Modifier
+//                .align(Alignment.TopCenter) // Aligns the text to the top center
+//                .padding(top = 16.dp) // Add padding from the top
+//                .fillMaxWidth() // Make the text take up the full width
+//                .wrapContentWidth(Alignment.CenterHorizontally) // Ensures the text is centered horizontally
+//        )
     }
 }

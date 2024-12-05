@@ -1,90 +1,55 @@
-//package com.example.nott_a_problem.pages.dashboard.components
-//
-//import androidx.compose.foundation.layout.fillMaxSize
-//import androidx.compose.foundation.layout.padding
-//import androidx.compose.material3.*
-//import androidx.compose.runtime.Composable
-//import androidx.compose.runtime.getValue
-//import androidx.compose.runtime.mutableStateOf
-//import androidx.compose.runtime.remember
-//import androidx.compose.runtime.setValue
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.graphics.painter.Painter
-//import androidx.compose.ui.res.painterResource
-//import com.example.nott_a_problem.R
-//
-//data class BottomNavigationItem(
-//    val title: String,
-//    val selectedIcon: Painter,
-//    val unselectedIcon: Painter,
-//    val hasNews: Boolean,
-//    val badgeCount: Int? = null,
-//)
-//
-//@Composable
-//fun MyBottomNavigationBar() {
-//    val items = listOf(
-//        BottomNavigationItem(
-//            title = "Home",
-//            selectedIcon = painterResource(R.drawable.home),
-//            unselectedIcon = painterResource(R.drawable.home_outline),
-//            hasNews = false,
-//        ),
-//        BottomNavigationItem(
-//            title = "Camera",
-//            selectedIcon = painterResource(R.drawable.camera),
-//            unselectedIcon = painterResource(R.drawable.camera_outline),
-//            hasNews = false,
-//        ),
-//    )
-//    var selectedItemIndex by remember { mutableStateOf(0) }
-//
-//    Surface(
-//        modifier = Modifier.fillMaxSize(),
-//        color = MaterialTheme.colorScheme.background
-//    ) {
-//        Scaffold(
-//            bottomBar = {
-//                NavigationBar {
-//                    items.forEachIndexed { index, item ->
-//                        NavigationBarItem(
-//                            selected = selectedItemIndex == index,
-//                            onClick = { selectedItemIndex = index },
-//                            label = { Text(text = item.title) },
-//                            alwaysShowLabel = false,
-//                            icon = {
-//                                BadgedBox(
-//                                    badge = {
-//                                        if (item.badgeCount != null) {
-//                                            Badge { Text(text = item.badgeCount.toString()) }
-//                                        } else if (item.hasNews) {
-//                                            Badge()
-//                                        }
-//                                    }
-//                                ) {
-//                                    Icon(
-//                                        painter = if (index == selectedItemIndex) {
-//                                            item.selectedIcon
-//                                        } else {
-//                                            item.unselectedIcon
-//                                        },
-//                                        contentDescription = item.title,
-//                                    )
-//                                }
-//                            }
-//                        )
-//                    }
-//                }
-//            }
-//        ) { paddingValues ->
-//            Surface(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .padding(paddingValues),
-//                color = MaterialTheme.colorScheme.background
-//            ) {
-//                // Your content here
-//            }
-//        }
-//    }
-//}
+import android.content.Intent
+import android.provider.MediaStore
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavController
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+
+@Composable
+fun BottomNavigationBar(navController: NavController, items: List<BottomNavItem>) {
+    val context = LocalContext.current // Access the context to start an Intent
+
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.primary,
+        tonalElevation = 4.dp
+    ) {
+        items.forEach { item ->
+            NavigationBarItem(
+                selected = false, // Update with logic to reflect the selected state
+                onClick = {
+                    if (item.route == "camera") {
+                        // Open the camera directly
+                        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                        context.startActivity(cameraIntent)
+                    } else {
+                        // Handle other items (navigate using NavController)
+                        navController.navigate(item.route) {
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                },
+                icon = {
+                    Icon(
+                        painterResource(id = item.icon),
+                        contentDescription = item.label
+                    )
+                },
+                label = { Text(text = item.label, color = Color.White) },
+                colors = NavigationBarItemDefaults.colors(
+                    indicatorColor = MaterialTheme.colorScheme.secondary
+                )
+            )
+        }
+    }
+}
+
+data class BottomNavItem(
+    val route: String,
+    val icon: Int,
+    val label: String
+)

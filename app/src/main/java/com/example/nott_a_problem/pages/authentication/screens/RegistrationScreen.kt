@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.nott_a_problem.pages.authentication.LoginBackground
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 @Composable
@@ -196,7 +197,6 @@ fun RegistrationScreen(navController: NavController) {
                 )
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // Register Button
                 Button(
                     onClick = {
                         if (email.isNotEmpty() && password.isNotEmpty() && password == confirmPassword) {
@@ -205,9 +205,30 @@ fun RegistrationScreen(navController: NavController) {
                                 auth.createUserWithEmailAndPassword(email, password)
                                     .addOnCompleteListener { task ->
                                         if (task.isSuccessful) {
-                                            Toast.makeText(context, "Registration successful", Toast.LENGTH_SHORT).show()
-                                            navController.navigate("get_started") {
-                                                popUpTo("register") { inclusive = true }
+                                            val userId = task.result.user?.uid // Get the user ID
+                                            val user = hashMapOf(
+                                                "email" to email,
+                                                "points" to 0,
+                                                "profilePictureUrl" to ""
+                                            )
+                                            // Add user data to Firestore
+                                            val db = FirebaseFirestore.getInstance()
+                                            userId?.let {
+                                                db.collection("users").document(it)
+                                                    .set(user)
+                                                    .addOnSuccessListener {
+                                                        Toast.makeText(context, "Registration successful", Toast.LENGTH_SHORT).show()
+                                                        navController.navigate("get_started") {
+                                                            popUpTo("register") { inclusive = true }
+                                                        }
+                                                    }
+                                                    .addOnFailureListener { e ->
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Failed to save user data: ${e.message}",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                    }
                                             }
                                         } else {
                                             Toast.makeText(
@@ -240,6 +261,7 @@ fun RegistrationScreen(navController: NavController) {
                         style = MaterialTheme.typography.titleMedium
                     )
                 }
+
 
             }
         }

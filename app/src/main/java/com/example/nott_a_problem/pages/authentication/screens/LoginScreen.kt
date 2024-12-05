@@ -35,6 +35,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -44,6 +46,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.nott_a_problem.AuthenticationManager
+import com.example.nott_a_problem.R
 import com.example.nott_a_problem.pages.authentication.AuthResponse
 import com.example.nott_a_problem.pages.authentication.LoginBackground
 import kotlinx.coroutines.flow.launchIn
@@ -75,6 +78,10 @@ fun LoginScreen(navController: NavHostController) {
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    val customFontFamily = FontFamily(
+        Font(R.font.lobster_regular, FontWeight.Normal) // Replace with your font file's name
+    )
+
     LoginBackground()
     Column(
         modifier = Modifier
@@ -85,7 +92,8 @@ fun LoginScreen(navController: NavHostController) {
         Spacer(modifier = Modifier.height(30.dp))
         Text(
             text = "Nott-A-Problem",
-            style = MaterialTheme.typography.displaySmall,
+            fontFamily = customFontFamily,
+            style = MaterialTheme.typography.displayMedium,
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(30.dp))

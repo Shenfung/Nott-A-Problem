@@ -60,7 +60,12 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation ("androidx.compose.material:material:1.7.5")
     implementation("com.google.firebase:firebase-auth:23.1.0")
+    implementation("com.google.firebase:firebase-firestore-ktx:25.1.1")
+    implementation("com.android.volley:volley:1.2.1")
+    implementation("com.google.android.gms:play-services-base:18.5.0")
+    implementation("com.google.firebase:firebase-storage-ktx:21.0.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
@@ -83,6 +88,12 @@ dependencies {
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
     implementation ("androidx.compose.material:material-icons-extended:1.7.5")
     implementation ("androidx.navigation:navigation-compose:2.8.4")
-
-
+    implementation("io.coil-kt:coil-compose:2.1.0")
+    implementation ("com.airbnb.android:lottie-compose:6.0.1")
+    implementation ("com.google.firebase:firebase-firestore-ktx")
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
+    implementation ("com.google.firebase:firebase-storage-ktx:21.0.1")
+    implementation ("com.squareup.picasso:picasso:2.71828")
+    implementation("io.coil-kt:coil-compose:2.2.2")
 }
