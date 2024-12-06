@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Nott-A-Problem</string>
+    <string name="google_maps_key">AIzaSyCHvtVWw6XA58GZEn2Qg_bjgaLz0DhL_Ls</string>
     <string name="web_client_id">1009184618379-543uv29i5r08kqpohr324049ccl6kofi.apps.googleusercontent.com</string>
 </resources>
