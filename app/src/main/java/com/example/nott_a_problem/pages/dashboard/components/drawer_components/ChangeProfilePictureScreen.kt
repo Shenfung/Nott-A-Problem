@@ -1,5 +1,6 @@
 package com.example.nott_a_problem.pages.profile
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -21,6 +22,7 @@ import coil.compose.rememberImagePainter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import java.io.InputStream
 import java.util.*
 
 @Composable
@@ -86,6 +88,7 @@ fun ChangeProfilePictureScreen(navController: NavController) {
             onClick = {
                 if (selectedImageUri != null && userId != null) {
                     uploadImageToFirebaseStorage(
+                        context = context,
                         userId = userId,
                         uri = selectedImageUri!!,
                         storage = storage,
@@ -125,7 +128,42 @@ fun ChangeProfilePictureScreen(navController: NavController) {
     }
 }
 
+//fun uploadImageToFirebaseStorage(
+//    userId: String,
+//    uri: Uri,
+//    storage: FirebaseStorage,
+//    firestore: FirebaseFirestore,
+//    onUploadSuccess: (String) -> Unit,
+//    onUploadFailure: (String) -> Unit
+//) {
+//    val storageRef = storage.reference.child("profile_pictures/$userId/${UUID.randomUUID()}.jpg")
+//    val uploadTask = storageRef.putFile(uri)
+//
+//    uploadTask
+//        .addOnSuccessListener {
+//            storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+//                // Save the download URL to Firestore
+//                firestore.collection("users").document(userId)
+//                    .update("profilePictureUrl", downloadUri.toString())
+//                    .addOnSuccessListener {
+//                        onUploadSuccess("Profile picture updated successfully!")
+//                    }
+//                    .addOnFailureListener { exception ->
+//                        Log.e("ChangeProfilePicture", "Firestore update failed: ${exception.message}")
+//                        onUploadFailure("Failed to save profile picture URL.")
+//                    }
+//            }.addOnFailureListener { exception ->
+//                Log.e("ChangeProfilePicture", "Download URL failed: ${exception.message}")
+//                onUploadFailure("Failed to get download URL.")
+//            }
+//        }
+//        .addOnFailureListener { exception ->
+//            Log.e("ChangeProfilePicture", "Upload failed: ${exception.message}")
+//            onUploadFailure("Failed to upload image.")
+//        }
+//}
 fun uploadImageToFirebaseStorage(
+    context: Context,
     userId: String,
     uri: Uri,
     storage: FirebaseStorage,
@@ -133,30 +171,45 @@ fun uploadImageToFirebaseStorage(
     onUploadSuccess: (String) -> Unit,
     onUploadFailure: (String) -> Unit
 ) {
-    val storageRef = storage.reference.child("profile_pictures/$userId/${UUID.randomUUID()}.jpg")
-    val uploadTask = storageRef.putFile(uri)
+    try {
+        // Read the file as bytes
+        val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+        val imageBytes = inputStream?.readBytes()
+        inputStream?.close()
 
-    uploadTask
-        .addOnSuccessListener {
-            storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
-                // Save the download URL to Firestore
-                firestore.collection("users").document(userId)
-                    .update("profilePictureUrl", downloadUri.toString())
-                    .addOnSuccessListener {
-                        onUploadSuccess("Profile picture updated successfully!")
+        if (imageBytes != null) {
+            val storageRef = storage.reference.child("profile_pictures/$userId/${UUID.randomUUID()}.jpg")
+
+            // Use putBytes() for uploading
+            val uploadTask = storageRef.putBytes(imageBytes)
+
+            uploadTask
+                .addOnSuccessListener {
+                    storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                        // Save the download URL to Firestore
+                        firestore.collection("users").document(userId)
+                            .update("profilePictureUrl", downloadUri.toString())
+                            .addOnSuccessListener {
+                                onUploadSuccess("Profile picture updated successfully!")
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.e("ChangeProfilePicture", "Firestore update failed: ${exception.message}")
+                                onUploadFailure("Failed to save profile picture URL.")
+                            }
+                    }.addOnFailureListener { exception ->
+                        Log.e("ChangeProfilePicture", "Download URL failed: ${exception.message}")
+                        onUploadFailure("Failed to get download URL.")
                     }
-                    .addOnFailureListener { exception ->
-                        Log.e("ChangeProfilePicture", "Firestore update failed: ${exception.message}")
-                        onUploadFailure("Failed to save profile picture URL.")
-                    }
-            }.addOnFailureListener { exception ->
-                Log.e("ChangeProfilePicture", "Download URL failed: ${exception.message}")
-                onUploadFailure("Failed to get download URL.")
-            }
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("ChangeProfilePicture", "Upload failed: ${exception.message}")
+                    onUploadFailure("Failed to upload image.")
+                }
+        } else {
+            onUploadFailure("Failed to read image bytes.")
         }
-        .addOnFailureListener { exception ->
-            Log.e("ChangeProfilePicture", "Upload failed: ${exception.message}")
-            onUploadFailure("Failed to upload image.")
-        }
+    } catch (exception: Exception) {
+        Log.e("ChangeProfilePicture", "Error reading image file: ${exception.message}")
+        onUploadFailure("Failed to read image file.")
+    }
 }
-

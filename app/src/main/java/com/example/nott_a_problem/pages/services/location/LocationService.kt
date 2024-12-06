@@ -1,4 +1,4 @@
-package com.example.nott_a_problem.pages.services
+package com.example.nott_a_problem.pages.services.location
 
 import com.google.android.gms.maps.model.LatLng
 //import com.google.maps.android.PolygonUtil
