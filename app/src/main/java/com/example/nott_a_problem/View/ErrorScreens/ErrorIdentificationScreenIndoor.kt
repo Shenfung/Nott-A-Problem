@@ -191,7 +191,12 @@ fun ErrorIdentificationScreenIndoor(
                             Button(
                                 onClick = {
                                     showDialog = false
-                                    navController.navigate("class_description_screen_indoor/${capturedImageUriString}/${area}/${roomNumber}/${className}/${userID}")
+                                    navController.navigate("subclass_description_screen_indoor/" +
+                                            "${Uri.encode(capturedImageUriString)}/" +
+                                            "${Uri.encode(area)}/${Uri.encode(roomNumber)}/" +
+                                            "${Uri.encode(className)}/" +
+                                            "${Uri.encode(userID)}"
+                                    )
                                 },
                                 modifier = Modifier.fillMaxWidth()
                             ) {

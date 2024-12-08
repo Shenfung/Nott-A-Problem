@@ -74,6 +74,7 @@ fun DrawerContent(
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                        // Default profile picture if URL is empty
                         Image(
                             painter = painterResource(id = R.drawable.account_circle),
                             contentDescription = "Profile Picture",
@@ -83,7 +84,6 @@ fun DrawerContent(
                                 .fillMaxWidth(0.2f),
                             contentScale = ContentScale.Crop
                         )
-                    }
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = username,
@@ -114,6 +114,7 @@ fun DrawerContent(
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
+
 
                 Row(
                     modifier = Modifier

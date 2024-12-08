@@ -51,10 +51,6 @@ fun ErrorIdentificationScreenOutdoor(
     area: String,
     className: String,
     subclassName:String,
-    onNoEventDetected: () -> Unit,
-    onProblemSubmitted: () -> Unit,
-    onNavigateToClassError: () -> Unit,
-    onNavigateToSubClassError: () -> Unit
 ) {
     val auth = FirebaseAuth.getInstance()
     val userID = auth.currentUser?.uid
@@ -134,7 +130,7 @@ fun ErrorIdentificationScreenOutdoor(
             ) {
                 Button(onClick = {
                     if (className.lowercase() == "no event") {
-                        onNoEventDetected()
+                        navController.navigate("no_event_detected")
                     } else {
                         uploadReportToFirestoreOutdoor(
                             capturedImageUriString,
@@ -143,13 +139,12 @@ fun ErrorIdentificationScreenOutdoor(
                             subclassName,
                             userID,
                             onSuccess = {
-                                onProblemSubmitted()
+                                navController.navigate("submitted")
                             },
                             onFailure = { error ->
 
                             }
                         )
-                        onProblemSubmitted()
                     }
                 }) {
                     Text(text = "Yes")
@@ -168,13 +163,13 @@ fun ErrorIdentificationScreenOutdoor(
                         Column {
                             Button(onClick = {
                                 showDialog = false
-                                onNavigateToClassError()
+                                navController.navigate("class_description_screen_outdoor")
                             }) {
                                 Text("Class")
                             }
                             Button(onClick = {
                                 showDialog = false
-                                onNavigateToSubClassError()
+                                navController.navigate("subclass_description_screen_outdoor")
                             }) {
                                 Text("Subclass")
                             }

@@ -151,10 +151,6 @@ fun AppNavigation() {
                 area = area,  // Pass appropriate data here
                 className = className,
                 subclassName = subclassName,
-                onNoEventDetected = { navController.navigate("no_event_detected") },
-                onProblemSubmitted = { navController.navigate("submitted") },
-                onNavigateToClassError = { /* Navigate to class error screen */ },
-                onNavigateToSubClassError = { /* Navigate to subclass error screen */ }
             )
         }
 
