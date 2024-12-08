@@ -31,9 +31,9 @@ import coil.request.ImageRequest
 
 @Composable
 fun ProfileButton(
+    email: String,
     username: String,
     points: Int,
-    profilePictureUrl: String,
     onClick: () -> Unit
 ) {
     Button(
@@ -54,21 +54,6 @@ fun ProfileButton(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            if (profilePictureUrl.isNotEmpty()) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(profilePictureUrl)
-                        .crossfade(true) // Add fade-in transition
-                        .build(),
-                    contentDescription = "Profile Picture",
-                    modifier = Modifier
-                        .padding(end = 8.dp)
-                        .height(50.dp)
-                        .fillMaxWidth(0.2f),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                // Default profile picture if URL is empty
                 androidx.compose.foundation.Image(
                     painter = painterResource(id = R.drawable.account_circle),
                     contentDescription = "Profile Picture",
@@ -78,7 +63,6 @@ fun ProfileButton(
                         .fillMaxWidth(0.2f),
                     contentScale = ContentScale.Crop
                 )
-            }
 
             // Username and Points
             Column(
@@ -92,27 +76,12 @@ fun ProfileButton(
                     color = Color.Black
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = "Points",
+                        text = email,
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.Gray
                     )
                     Spacer(modifier = Modifier.height(4.dp))
-                    Icon(
-                        painter = painterResource(id = R.drawable.star),
-                        contentDescription = "Star Icon",
-                        tint = Color.Yellow,
-                        modifier = Modifier
-                            .padding(start = 4.dp)
-                            .height(16.dp)
-                    )
-                    Text(
-                        text = ": $points",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray
-                    )
-                }
             }
 
             // More Options Icon

@@ -37,7 +37,6 @@ import com.example.nott_a_problem.R
 
 @Composable
 fun DrawerContent(
-    profilePictureUrl: String,
     username: String,
     email: String,
     onChangePassword: () -> Unit,

@@ -130,7 +130,6 @@ fun HomeScreen(navController: NavController) {
                 drawerState = drawerState,
                 drawerContent = {
                     DrawerContent(
-                        profilePictureUrl = profilePictureUrl.value,
                         username = userName.value,
                         email = userEmail.value,
                         onChangePassword = { navController.navigate("change_password") },
@@ -197,7 +196,7 @@ fun HomeScreen(navController: NavController) {
                                 ProfileButton(
                                     username = userName.value,
                                     points = userPoints.value,
-                                    profilePictureUrl = profilePictureUrl.value
+                                    email = userEmail.value,
                                 ) {
                                     coroutineScope.launch { drawerState.open() }
                                 }
