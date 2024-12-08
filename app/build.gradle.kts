@@ -104,8 +104,8 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0") // JSON handling
     implementation("com.github.bumptech.glide:glide:4.15.1") // Image handling (optional)
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7") // Lifecycle support
-    implementation("com.google.android.gms:play-services-maps:19.0.0")
     implementation ("com.google.maps.android:android-maps-utils:3.5.0")
     implementation ("com.google.maps.android:maps-compose:2.3.0")
-
+    implementation ("com.google.firebase:firebase-storage:21.0.1")
+    implementation("androidx.concurrent:concurrent-futures-ktx:1.2.0")
 }

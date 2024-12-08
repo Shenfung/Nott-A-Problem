@@ -8,7 +8,6 @@ import com.google.firebase.auth.auth
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import java.lang.Exception
 
 class AuthenticationManager(val context: Context) {
     private val auth = Firebase.auth

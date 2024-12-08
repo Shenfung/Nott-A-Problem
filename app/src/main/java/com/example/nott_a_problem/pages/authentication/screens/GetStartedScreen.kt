@@ -37,11 +37,11 @@ fun GetStartedScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Image(
-            painter = painterResource(id = R.drawable.login), // Replace with your actual image name
-            contentDescription = "App Illustration", // Description for accessibility
+            painter = painterResource(id = R.drawable.login),
+            contentDescription = "App Illustration",
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp) // Adjust the height to fit your design
+                .height(200.dp)
         )
 
         Text(
@@ -60,9 +60,7 @@ fun GetStartedScreen(navController: NavController) {
 
         Button(
             onClick = {
-                // Navigate to the main screen
                 navController.navigate("home") {
-                    // Remove this screen from the backstack
                     popUpTo("getStarted") { inclusive = true }
                 }
             },

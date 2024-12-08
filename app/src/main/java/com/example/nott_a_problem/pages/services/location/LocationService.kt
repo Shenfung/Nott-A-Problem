@@ -1,8 +1,6 @@
 package com.example.nott_a_problem.pages.services.location
 
 import com.google.android.gms.maps.model.LatLng
-//import com.google.maps.android.PolygonUtil
-
 
 class LocationService {
     private val indoorAreas = listOf(
@@ -725,19 +723,6 @@ class LocationService {
         ),
     )
 
-//    fun isInsideArea(latitude: Double, longitude: Double): String {
-//        val point = LatLng(latitude, longitude)
-//
-//        for (area in indoorAreas) {
-//            areaPolygons[area]?.let {
-//                if (PolygonUtil.containsLocation(point, it, true)) {
-//                    return area // The coordinates are inside an indoor area, return the area name
-//                }
-//            }
-//        }
-//
-//        return "Outside Specified Areas" // The coordinates are not inside any specific area
-//    }
 fun isInsideArea(latitude: Double, longitude: Double): String {
     val point = LatLng(latitude, longitude)
 
@@ -748,8 +733,7 @@ fun isInsideArea(latitude: Double, longitude: Double): String {
             }
         }
     }
-
-    return "Outside Specified Areas" // The coordinates are not inside any specific area
+    return "outside"
 }
 
     // Custom function to check if a point is inside a polygon using Ray-Casting algorithm

@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 @Composable
-fun DashboardBackground() {
+fun ApplicationBackground() {
     Box(
         modifier = Modifier
             .fillMaxSize()

@@ -1,5 +1,6 @@
 package com.example.nott_a_problem.pages.classifications
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -37,34 +39,29 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberAsyncImagePainter
+import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.example.nott_a_problem.R
-import com.example.nott_a_problem.pages.services.image_classification.ImageClassificationViewModel
 
 @Composable
-fun ErrorIdentificationScreen(
-    viewModel: ImageClassificationViewModel,
-    firstPredictionResult: List<String>,
-//    secondPredictionResult: List<String>,
-//    thirdPredictionResult: List<String>,
-//    fourthPredictionResult: List<String>,
-    locationInfo: String,
-    roomNumber: String,
+fun ErrorIdentificationScreenOutdoor(
+    navController: NavController,
+    capturedImageUriString: String,
+    area: String,
+    className: String,
+    subclassName:String,
     onNoEventDetected: () -> Unit,
     onProblemSubmitted: () -> Unit,
     onNavigateToClassError: () -> Unit,
     onNavigateToSubClassError: () -> Unit
 ) {
 
-    val className by viewModel.className // Observe ViewModel state
-    val subclassName by viewModel.subclassName
-    val errorMessage by viewModel.errorMessage
-    var showDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
-    if (errorMessage != null) {
-        Text(text = "Error: $errorMessage", color = Color.Red)
-        return
-    }
+    var isErrorReported by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+
+    var showDialog by remember { mutableStateOf(false) }
 
     val screenWidth = LocalDensity.current.run { androidx.compose.ui.platform.LocalContext.current.resources.displayMetrics.widthPixels.toDp() }
 
@@ -97,7 +94,7 @@ fun ErrorIdentificationScreen(
 
             // Image Display
             Image(
-                painter = rememberAsyncImagePainter(model = viewModel.reportImageUrl),
+                painter = rememberImagePainter(Uri.parse(capturedImageUriString)),
                 contentDescription = "Uploaded Image",
                 modifier = Modifier
                     .size(300.dp)
@@ -125,10 +122,11 @@ fun ErrorIdentificationScreen(
                         )
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = "Class: ${firstPredictionResult[0].replace("_", " ")}")
-                    Text(text = "Subclass: ${firstPredictionResult[1]}")
-                    Text(text = "Location: $locationInfo")
-                    Text(text = "Room Number: $roomNumber")
+                    if (className != null && subclassName != null) {
+                        Text(text = "Class: $className", style = MaterialTheme.typography.h6)
+                        Text(text = "Subclass: $subclassName", style = MaterialTheme.typography.body1)
+                    }
+                    Text(text = "Area: $area", style = MaterialTheme.typography.body1)
                 }
             }
 
@@ -140,7 +138,7 @@ fun ErrorIdentificationScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Button(onClick = {
-                    if (firstPredictionResult[0].replace("_", " ").lowercase() == "no event") {
+                    if (className.lowercase() == "no event") {
                         onNoEventDetected()
                     } else {
                         onProblemSubmitted()

@@ -1,16 +1,17 @@
 package com.example.nott_a_problem.pages.services.location
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import android.net.Uri
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 
 @Composable
-fun IndoorCheckScreen(navController: NavController, area: String) {
+fun IndoorCheckScreen(
+    navController: NavController,
+    capturedImageUriString: String?,
+    area: String?,
+    className: String?,
+    subclassName: String?
+) {
     val indoorAreas = listOf(
         "Block A; Trent Building",
         "Block B and B1; Faculty of Science and Engineering",
@@ -55,32 +56,26 @@ fun IndoorCheckScreen(navController: NavController, area: String) {
 
     if (!isIndoor) {
         LaunchedEffect(Unit) {
-            navController.navigate("error_identification/$area")
+            navController.navigate("error_identification_outdoor/${capturedImageUriString}/${area}/${className}/${subclassName}")
         }
         return
-    }
+    }else{
+        var isDialogOpen by remember { mutableStateOf(false) }
+        var roomNumber by remember { mutableStateOf("") }
 
-    var isDialogOpen by remember { mutableStateOf(false) }
-    var roomNumber by remember { mutableStateOf("") }
-//    val roomNumber = "Room101"
-    val locationInfo = "Location Info"
-    val firstPredictionResult = "Prediction1,Prediction2"
-
-    Column(modifier = Modifier.padding(16.dp)) {
-        Button(onClick = { isDialogOpen = true }) {
-            Text("Enter Room Number")
-        }
-    }
-
-    if (isDialogOpen) {
         RoomNumberDialog(
             onCancel = { isDialogOpen = false },
             onConfirm = { enteredRoomNumber ->
-                isDialogOpen = false
                 roomNumber = enteredRoomNumber
 
-                // Navigate to the Error Identification Screen
-                navController.navigate("error_identification/${roomNumber}/${area}/$firstPredictionResult")
+                navController.navigate(
+                    "error_identification_indoor/" +
+                            "${Uri.encode(capturedImageUriString)}/" +
+                            "${Uri.encode(area)}/" +
+                            "${Uri.encode(roomNumber)}/" +
+                            "${Uri.encode(className)}/" +
+                            "${Uri.encode(subclassName)}"
+                )
             }
         )
     }

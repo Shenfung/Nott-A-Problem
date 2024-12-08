@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -36,12 +37,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.nott_a_problem.R
-import com.example.nott_a_problem.pages.services.DashboardBackground
 import com.example.nott_a_problem.pages.dashboard.components.ProfileButton
 import com.example.nott_a_problem.pages.dashboard.components.drawer_components.DrawerContent
 import com.example.nott_a_problem.pages.dashboard.components.drawer_components.TermsOfServiceDialog
 import com.example.nott_a_problem.pages.dashboard.components.past_report_section_components.PastReportSectionCard
 import com.example.nott_a_problem.pages.dashboard.components.past_report_section_components.Report
+import com.example.nott_a_problem.pages.services.ApplicationBackground
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
@@ -117,92 +118,100 @@ fun HomeScreen(navController: NavController) {
         }
     }
 
-    // Wrap the entire content in a Box
-    Box(modifier = Modifier.fillMaxSize()) {
-        // Background and Drawer
-        DashboardBackground()
 
-        ModalNavigationDrawer(
-            drawerState = drawerState,
-            drawerContent = {
-                DrawerContent(
-                    profilePictureUrl = profilePictureUrl.value,
-                    username = userName.value,
-                    email = userEmail.value,
-                    onChangeProfilePicture= {navController.navigate("change_profile_picture") },
-                    onChangePassword= {navController.navigate("change_password") },
-                    onTermsOfService= { showTermsDialog = true },
-                    onContactUs= {
-                        val intent = Intent(Intent.ACTION_SENDTO).apply {
-                            data = Uri.parse("mailto:sam.chinsf@gmail.com")
-                            putExtra(Intent.EXTRA_SUBJECT, "Inquiry regarding Nott-A-Problem App")
-                        }
-                        context.startActivity(intent)},
-                    onHelp = {
-                        val phoneIntent = Intent(Intent.ACTION_DIAL).apply {
-                            data = Uri.parse("tel:0115 951 3557")
-                        }
-                        context.startActivity(phoneIntent)
-                    },
-                    onLogout = {
-                        FirebaseAuth.getInstance().signOut()
-                        navController.navigate("login")
-                    }
-                )
-
-                if (showTermsDialog) {
-                    TermsOfServiceDialog(onDismiss = { showTermsDialog = false })
-                }
-            }
-        ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f)
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        "Nott-A-Problem",
-                        fontFamily = customFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = (screenWidth.value / 8).sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .padding(top = 16.dp)
-                            .fillMaxWidth()
-                            .wrapContentWidth(Alignment.CenterHorizontally)
-                    )
-                    ProfileButton(
+            ModalNavigationDrawer(
+                drawerState = drawerState,
+                drawerContent = {
+                    DrawerContent(
+                        profilePictureUrl = profilePictureUrl.value,
                         username = userName.value,
-                        points = userPoints.value,
-                        profilePictureUrl = profilePictureUrl.value
-                    ) {
-                        coroutineScope.launch { drawerState.open() }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    PastReportSectionCard(reports = sampleReports)
-
-                    Text(
-                        text = "Recent Problems:",
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                        modifier = Modifier.fillMaxWidth() // Ensures the text spans full width
+                        email = userEmail.value,
+                        onChangeProfilePicture = { navController.navigate("change_profile_picture") },
+                        onChangePassword = { navController.navigate("change_password") },
+                        onTermsOfService = { showTermsDialog = true },
+                        onContactUs = {
+                            val intent = Intent(Intent.ACTION_SENDTO).apply {
+                                data = Uri.parse("mailto:sam.chinsf@gmail.com")
+                                putExtra(Intent.EXTRA_SUBJECT, "Inquiry regarding Nott-A-Problem App")
+                            }
+                            context.startActivity(intent)
+                        },
+                        onHelp = {
+                            val phoneIntent = Intent(Intent.ACTION_DIAL).apply {
+                                data = Uri.parse("tel:0115 951 3557")
+                            }
+                            context.startActivity(phoneIntent)
+                        },
+                        onLogout = {
+                            FirebaseAuth.getInstance().signOut()
+                            navController.navigate("login") {
+                                // Prevent back press after logging out
+                                popUpTo(0) { inclusive = true }
+                            }
+                        }
                     )
+                    if (showTermsDialog) {
+                        TermsOfServiceDialog(onDismiss = { showTermsDialog = false })
+                    }
+                }
+            ) {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Scaffold(
+                        topBar = {
+                            // You can define a top bar here if needed
+                        },
+                        bottomBar = {
+                            BottomNavigationBar(navController = navController)
+                        }
+                    ) { contentPadding ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(contentPadding)
+                        ) {
+                            ApplicationBackground()
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp),
+                                verticalArrangement = Arrangement.Top,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    "Nott-A-Problem",
+                                    fontFamily = customFontFamily,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = (screenWidth.value / 8).sp,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier
+                                        .padding(top = 16.dp)
+                                        .fillMaxWidth()
+                                        .wrapContentWidth(Alignment.CenterHorizontally)
+                                )
+
+                                Spacer(modifier = Modifier.height(16.dp))
+                                ProfileButton(
+                                    username = userName.value,
+                                    points = userPoints.value,
+                                    profilePictureUrl = profilePictureUrl.value
+                                ) {
+                                    coroutineScope.launch { drawerState.open() }
+                                }
+                                Spacer(modifier = Modifier.height(16.dp))
+                                PastReportSectionCard(reports = reports.value)
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = "Recent Problems:",
+                                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
                 }
             }
         }
-
-        BottomNavigationBar(
-            navController = navController,
-        )
     }
 }
-
 
 
 

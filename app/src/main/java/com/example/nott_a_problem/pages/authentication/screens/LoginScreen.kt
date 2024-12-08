@@ -79,7 +79,7 @@ fun LoginScreen(navController: NavHostController) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val customFontFamily = FontFamily(
-        Font(R.font.lobster_regular, FontWeight.Normal) // Replace with your font file's name
+        Font(R.font.lobster_regular, FontWeight.Normal)
     )
 
     LoginBackground()
@@ -111,7 +111,7 @@ fun LoginScreen(navController: NavHostController) {
                 color = MaterialTheme.colorScheme.background.copy(alpha = 0.5f), // Semi-transparent white
                 shape = RoundedCornerShape(16.dp) // Rounded corners for the box
             )
-            .padding(16.dp) // Padding inside the box for its content
+            .padding(16.dp)
         ) {
             Column{
             Text(
