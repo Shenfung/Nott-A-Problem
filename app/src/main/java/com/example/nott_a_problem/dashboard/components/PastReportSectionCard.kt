@@ -56,15 +56,5 @@ fun PastReportSectionCard(reports: List<PastReports>) {
             }
         }
 
-        val backgroundPainter: Painter = painterResource(id = R.drawable.megaphone)
-        Image(
-            painter = backgroundPainter,
-            contentDescription = "Background Image",
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-                .size(100.dp)
-                .alpha(0.5f)
-        )
     }
 }
