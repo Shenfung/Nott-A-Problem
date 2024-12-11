@@ -5,8 +5,9 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -37,39 +38,33 @@ fun LoadingScreen(
 ) {
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        val capturedImagePhotoFile = convertUriToFile(context, capturedImageUriString)
-                getUserLocation(context, { area ->
-                    Log.d("area", area!!)
-                    val viewModel = ImageClassificationViewModel()
-                    viewModel.classifyImageFromFile(
-                        imageFile = capturedImagePhotoFile!!,
-                        onSuccess = {
-                            val className = viewModel.className.value
-                            val subclassName = viewModel.subclassName.value
-
-                            if (className != null && subclassName != null) {
-                                if(className != "No Event" && subclassName != "No Event") {
-                                    navController.navigate(
-                                        "indoorCheckScreen/" +
-                                                "${Uri.encode(capturedImageUriString.toString())}/" +
-                                                "${Uri.encode(area)}/" +
-                                                "${Uri.encode(className)}/" +
-                                                Uri.encode(subclassName)
-                                    )
-                                } else{
-                                    navController.navigate("no_event_detected")
-                                }
-                            } else {
-                                Toast.makeText(context, "Classification failed", Toast.LENGTH_SHORT).show()
-                            }
-                        },
-                        onError = {
-                            Toast.makeText(context, "Try again", Toast.LENGTH_SHORT).show()
-                        }
-                    )
-                }, navController)
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            getUserLocation(context, { area ->
+                proceedWithClassification(context, capturedImageUriString, area, navController)
+            }, navController)
+        } else {
+            Toast.makeText(context, "Location permission denied", Toast.LENGTH_SHORT).show()
+            navController.navigate("permission_denied_screen") // Navigate to an error screen or handle it differently
+        }
     }
+
+    LaunchedEffect(Unit) {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            getUserLocation(context, { area ->
+                proceedWithClassification(context, capturedImageUriString, area, navController)
+            }, navController)
+        } else {
+            locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+    }
+
     Box(
         contentAlignment = androidx.compose.ui.Alignment.Center,
         modifier = Modifier.fillMaxSize()
@@ -138,6 +133,43 @@ private fun convertUriToFile(context: Context, uri: Uri?): File? {
     }
     return tempFile
 }
+
+private fun proceedWithClassification(
+    context: Context,
+    capturedImageUriString: Uri,
+    area: String?,
+    navController: NavController
+) {
+    val capturedImagePhotoFile = convertUriToFile(context, capturedImageUriString)
+    val viewModel = ImageClassificationViewModel()
+    viewModel.classifyImageFromFile(
+        imageFile = capturedImagePhotoFile!!,
+        onSuccess = {
+            val className = viewModel.className.value
+            val subclassName = viewModel.subclassName.value
+
+            if (className != null && subclassName != null) {
+                if (className != "No Event" && subclassName != "No Event") {
+                    navController.navigate(
+                        "indoorCheckScreen/" +
+                                "${Uri.encode(capturedImageUriString.toString())}/" +
+                                "${Uri.encode(area ?: "")}/" +
+                                "${Uri.encode(className)}/" +
+                                Uri.encode(subclassName)
+                    )
+                } else {
+                    navController.navigate("no_event_detected")
+                }
+            } else {
+                Toast.makeText(context, "Classification failed", Toast.LENGTH_SHORT).show()
+            }
+        },
+        onError = {
+            Toast.makeText(context, "Try again", Toast.LENGTH_SHORT).show()
+        }
+    )
+}
+
 
 
 

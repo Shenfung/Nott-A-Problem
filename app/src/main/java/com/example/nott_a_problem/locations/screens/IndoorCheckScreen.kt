@@ -57,7 +57,9 @@ fun IndoorCheckScreen(
 
     if (!isIndoor) {
         LaunchedEffect(Unit) {
-            navController.navigate("error_identification_outdoor/${capturedImageUriString}/${area}/${className}/${subclassName}")
+            navController.navigate(
+                "error_identification_outdoor/${Uri.encode(capturedImageUriString)}/${Uri.encode(area)}/${Uri.encode(className)}/${Uri.encode(subclassName)}"
+            )
         }
         return
     }else{
