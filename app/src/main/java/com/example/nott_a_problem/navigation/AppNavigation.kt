@@ -29,7 +29,7 @@ import com.example.nott_a_problem.locations.screens.OutsideCampusScreen
 fun AppNavigation() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "home") {
+    NavHost(navController = navController, startDestination = "login") {
         composable("register") { RegistrationScreen(navController) }
         composable("get_started") { GetStartedScreen(navController) }
         composable("login") { LoginScreen(navController) }
